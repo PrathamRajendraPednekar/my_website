@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Mail, MessageCircle, Send, Sparkles, Globe, Cpu, Zap, 
@@ -116,36 +116,213 @@ const Contact: React.FC = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const formRef = useRef<HTMLFormElement>(null);
 
+  // Advanced Console States
+  const [targetProgress, setTargetProgress] = useState(0);
+  const [displayProgress, setDisplayProgress] = useState(0);
+  const [focusedField, setFocusedField] = useState<'name' | 'email' | 'message' | null>(null);
+  const [bootSequenceComplete, setBootSequenceComplete] = useState(false);
+  const [bootLines, setBootLines] = useState<string[]>([]);
+  const [activityLogs, setActivityLogs] = useState<string[]>([]);
+  const [cursorVisible, setCursorVisible] = useState(true);
+
+  const mountTimeRef = useRef(Date.now());
+  const prevEmailValid = useRef(false);
+  const prevProgress = useRef(0);
+  const prevConsoleState = useRef("OFFLINE");
+
   // Stricter Email Regex for validation
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   
-  const isNameValid = formData.name.trim().length > 2;
+  const isNameValid = formData.name.length > 0;
   const isEmailValid = emailRegex.test(formData.email);
-  const isMessageValid = formData.message.trim().length > 5;
-  const isFormValid = isNameValid && isEmailValid && isMessageValid;
+  const isMessageValid = formData.message.length >= 10;
+  
+  // Strict form validation for submission
+  const isFormValidSubmit = formData.name.trim().length > 2 && 
+                            isEmailValid && 
+                            formData.message.trim().length > 5;
 
-  let progress = 0;
-  if (isNameValid) progress += 33;
-  if (isEmailValid) progress += 33;
-  if (isMessageValid) progress += 34;
+  // 1. Character-based Real-time Progress Calculation
+  useEffect(() => {
+    const nameLength = formData.name.length;
+    const emailLength = formData.email.length;
+    const messageLength = formData.message.length;
 
-  let statusMessage = "OFFLINE";
-  let statusColor = "text-red-400";
-  let progressBars = "░░░░░░░░░░░░░░░░░░░░ 0%";
+    const nameProgress = Math.min(nameLength / 12, 1) * 30;
+    const emailProgress = isEmailValid ? 30 : Math.min(emailLength / 20, 1) * 20;
+    const messageProgress = Math.min(messageLength / 80, 1) * 40;
+    
+    let calcProgress = Math.floor(nameProgress + emailProgress + messageProgress);
+    
+    // Cap at 99 unless fully valid (using our submit validation logic)
+    if (isFormValidSubmit) {
+      setTargetProgress(100);
+    } else {
+      setTargetProgress(Math.min(99, calcProgress));
+    }
+  }, [formData, isEmailValid, isFormValidSubmit]);
 
-  if (progress === 100) {
-    statusMessage = "READY TO TRANSMIT";
-    statusColor = "text-green-400 font-bold";
-    progressBars = "████████████████████ 100%";
-  } else if (progress >= 66) {
-    statusMessage = "LINK ESTABLISHED";
-    statusColor = "text-yellow-400 font-semibold";
-    progressBars = "██████████████░░░░░░ 66%";
-  } else if (progress >= 33) {
-    statusMessage = "SIGNAL WEAK";
-    statusColor = "text-orange-400";
-    progressBars = "███████░░░░░░░░░░░░░ 33%";
+  // 2. Animated Percentage Ticker (One-by-One Chasing)
+  useEffect(() => {
+    if (displayProgress === targetProgress) return;
+
+    const step = displayProgress < targetProgress ? 1 : -1;
+    const delay = 18; // ms per tick
+
+    const timer = setTimeout(() => {
+      setDisplayProgress(prev => prev + step);
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [displayProgress, targetProgress]);
+
+  // ▋ Cursor Blink Effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCursorVisible(prev => !prev);
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
+
+  // 6. Typewriter Boot Sequence (on Mount)
+  useEffect(() => {
+    const bootMessages = [
+      "> INITIALIZING TELEMETRY SYSTEM...",
+      "> LOADING SIGNAL MODULES...",
+      "> SYSTEM READY. AWAITING INPUT."
+    ];
+    
+    const addLog = (msg: string) => {
+      const elapsed = Math.floor((Date.now() - mountTimeRef.current) / 1000);
+      const pad = (num: number) => num.toString().padStart(2, '0');
+      const timestamp = `[00:${pad(elapsed)}]`;
+      setActivityLogs(prev => [...prev, `${timestamp} ${msg}`]);
+    };
+
+    addLog("SYSTEM POWER ON");
+
+    const timer1 = setTimeout(() => {
+      setBootLines(prev => [...prev, bootMessages[0]]);
+      addLog("INITIALIZING TELEMETRY...");
+    }, 600);
+
+    const timer2 = setTimeout(() => {
+      setBootLines(prev => [...prev, bootMessages[1]]);
+      addLog("LOADING SIGNAL MODULES...");
+    }, 1200);
+
+    const timer3 = setTimeout(() => {
+      setBootLines(prev => [...prev, bootMessages[2]]);
+      addLog("SYSTEM READY. AWAITING INPUT.");
+      setBootSequenceComplete(true);
+    }, 1800);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+    };
+  }, []);
+
+  // 8. Auto-scroll Activity Log
+  const logEndRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (logEndRef.current) {
+      logEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [activityLogs]);
+
+  // Activity Logging Effects
+  useEffect(() => {
+    if (!bootSequenceComplete) return;
+    if (focusedField) {
+      const elapsed = Math.floor((Date.now() - mountTimeRef.current) / 1000);
+      const pad = (num: number) => num.toString().padStart(2, '0');
+      const timestamp = `[00:${pad(elapsed)}]`;
+      setActivityLogs(prev => [...prev, `${timestamp} ${focusedField.toUpperCase()} field active...`]);
+    }
+  }, [focusedField, bootSequenceComplete]);
+
+  useEffect(() => {
+    if (!bootSequenceComplete) return;
+    if (isEmailValid && !prevEmailValid.current) {
+      const elapsed = Math.floor((Date.now() - mountTimeRef.current) / 1000);
+      const pad = (num: number) => num.toString().padStart(2, '0');
+      const timestamp = `[00:${pad(elapsed)}]`;
+      setActivityLogs(prev => [...prev, `${timestamp} EMAIL validated ✓`]);
+    }
+    prevEmailValid.current = isEmailValid;
+  }, [isEmailValid, bootSequenceComplete]);
+
+  // Console State logic
+  let consoleState: 'OFFLINE' | 'ESTABLISHING SIGNAL' | 'LINK ESTABLISHED' | 'READY TO TRANSMIT' | 'SIGNAL SENT' = 'OFFLINE';
+  if (displayProgress === 100) {
+    consoleState = 'SIGNAL SENT';
+  } else if (displayProgress >= 80) {
+    consoleState = 'READY TO TRANSMIT';
+  } else if (displayProgress >= 40) {
+    consoleState = 'LINK ESTABLISHED';
+  } else if (displayProgress > 0) {
+    consoleState = 'ESTABLISHING SIGNAL';
   }
+
+  // Border & Glow Class Mapping
+  const borderClass = {
+    OFFLINE:               "border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)] bg-red-950/5",
+    "ESTABLISHING SIGNAL": "border-orange-500/20 shadow-[0_0_15px_rgba(249,115,22,0.1)] bg-orange-950/5",
+    "LINK ESTABLISHED":    "border-yellow-400/20 shadow-[0_0_15px_rgba(234,179,8,0.1)] bg-yellow-950/5",
+    "READY TO TRANSMIT":   "border-emerald-400/20 shadow-[0_0_15px_rgba(52,211,153,0.1)] bg-emerald-950/5",
+    "SIGNAL SENT":         "border-cyan-400/20 shadow-[0_0_15px_rgba(34,211,238,0.1)] bg-cyan-950/5",
+  }[consoleState];
+
+  const statusColor = {
+    OFFLINE:               "text-red-400 drop-shadow-[0_0_4px_rgba(248,113,113,0.4)]",
+    "ESTABLISHING SIGNAL": "text-orange-400 drop-shadow-[0_0_4px_rgba(251,146,60,0.4)]",
+    "LINK ESTABLISHED":    "text-yellow-400 drop-shadow-[0_0_4px_rgba(250,204,21,0.4)]",
+    "READY TO TRANSMIT":   "text-emerald-400 drop-shadow-[0_0_4px_rgba(52,211,153,0.4)]",
+    "SIGNAL SENT":         "text-cyan-400 drop-shadow-[0_0_4px_rgba(34,211,238,0.4)]",
+  }[consoleState];
+
+  const dotColor = {
+    OFFLINE:               "bg-red-500",
+    "ESTABLISHING SIGNAL": "bg-orange-500 animate-pulse",
+    "LINK ESTABLISHED":    "bg-yellow-500 animate-pulse",
+    "READY TO TRANSMIT":   "bg-emerald-400 animate-ping",
+    "SIGNAL SENT":         "bg-cyan-400 animate-pulse",
+  }[consoleState];
+
+  // Log state transitions
+  useEffect(() => {
+    if (!bootSequenceComplete) return;
+    if (consoleState !== prevConsoleState.current) {
+      const elapsed = Math.floor((Date.now() - mountTimeRef.current) / 1000);
+      const pad = (num: number) => num.toString().padStart(2, '0');
+      const timestamp = `[00:${pad(elapsed)}]`;
+      setActivityLogs(prev => [...prev, `${timestamp} STATUS: ${consoleState}`]);
+    }
+    prevConsoleState.current = consoleState;
+  }, [consoleState, bootSequenceComplete]);
+
+  // Log signal ticks
+  useEffect(() => {
+    if (!bootSequenceComplete) return;
+    if (displayProgress !== prevProgress.current && [10, 25, 50, 75, 100].includes(displayProgress)) {
+      const elapsed = Math.floor((Date.now() - mountTimeRef.current) / 1000);
+      const pad = (num: number) => num.toString().padStart(2, '0');
+      const timestamp = `[00:${pad(elapsed)}]`;
+      setActivityLogs(prev => [...prev, `${timestamp} SIGNAL STRENGTH: ${displayProgress}%`]);
+    }
+    prevProgress.current = displayProgress;
+  }, [displayProgress, bootSequenceComplete]);
+
+  // 3. Dynamic Progress Bar Blocks
+  const filledBlocks = Math.floor(displayProgress / 5);
+  const emptyBlocks = 20 - filledBlocks;
+  const progressBars = "█".repeat(filledBlocks) + "░".repeat(emptyBlocks);
+
+  // 5. Immersive Readout Badges
+  const okBadge = <span className="text-emerald-400 font-mono">[ OK ]</span>;
+  const pendingBadge = <span className="text-gray-500 font-mono">[ PENDING ]</span>;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -155,7 +332,7 @@ const Contact: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!isFormValid) return;
+    if (!isFormValidSubmit) return;
 
     setFormStatus('submitting');
     
@@ -290,33 +467,70 @@ const Contact: React.FC = () => {
               </div>
 
               {/* Telemetry Console Panel */}
-              <div className="mb-8 p-5 rounded-2xl bg-black/40 border border-white/5 font-mono text-xs space-y-3 relative overflow-hidden shadow-inner">
+              <div className={`mb-8 p-5 rounded-2xl border font-mono text-xs space-y-3 relative overflow-hidden shadow-inner transition-all duration-500 ${borderClass}`}>
                 <div className="absolute top-0 left-0 w-[2px] h-full bg-accent-blue/30"></div>
-                <div className="flex justify-between items-center">
-                  <span className="text-muted/50 text-[10px] tracking-wider uppercase">SYS_STATUS:</span>
-                  <span className={`${statusColor} flex items-center gap-2 text-[11px]`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${progress === 100 ? 'bg-green-500 animate-ping' : progress >= 33 ? 'bg-yellow-500 animate-pulse' : 'bg-red-500'}`}></span>
-                    {statusMessage}<span className="animate-[pulse_1s_infinite] font-bold">_</span>
-                  </span>
-                </div>
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
-                  <span className="text-muted/50 text-[10px] tracking-wider uppercase">SIGNAL_STR:</span>
-                  <span className="text-accent-blue text-[11px] select-all font-bold tracking-tight">{progressBars}</span>
-                </div>
-                <div className="grid grid-cols-3 gap-2 pt-3 border-t border-white/5 text-[9px] text-center tracking-wider font-semibold">
-                  <div>
-                    <span className="block text-muted/30 mb-0.5">ID_VAL</span>
-                    <span className={isNameValid ? "text-green-400" : "text-muted/30"}>{isNameValid ? "VALIDATED" : "PENDING"}</span>
+                
+                {!bootSequenceComplete ? (
+                  /* 6. Typewriter Boot Sequence Area */
+                  <div className="font-mono text-[10px] text-accent-blue space-y-1.5 py-2 min-h-[90px]">
+                    {bootLines.map((line, i) => (
+                      <div key={i} className="tracking-wide">{line}</div>
+                    ))}
+                    <div className="w-1.5 h-3 bg-accent-blue animate-[pulse_1s_infinite] inline-block ml-0.5"></div>
                   </div>
-                  <div>
-                    <span className="block text-muted/30 mb-0.5">FREQ_VAL</span>
-                    <span className={isEmailValid ? "text-green-400" : "text-muted/30"}>{isEmailValid ? "VALIDATED" : "PENDING"}</span>
-                  </div>
-                  <div>
-                    <span className="block text-muted/30 mb-0.5">DATA_VAL</span>
-                    <span className={isMessageValid ? "text-green-400" : "text-muted/30"}>{isMessageValid ? "VALIDATED" : "PENDING"}</span>
-                  </div>
-                </div>
+                ) : (
+                  /* Normal Telemetry Console */
+                  <>
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted/50 text-[10px] tracking-wider uppercase">SYS_STATUS:</span>
+                      <span className={`${statusColor} flex items-center gap-2 text-[11px] font-bold`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${dotColor}`}></span>
+                        {consoleState}
+                        <span className="animate-[pulse_1s_infinite] font-bold">_</span>
+                      </span>
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
+                      <span className="text-muted/50 text-[10px] tracking-wider uppercase">SIGNAL_STR:</span>
+                      <span className="text-accent-blue text-[11px] font-bold tracking-tight select-all drop-shadow-[0_0_3px_rgba(79,142,247,0.3)]">
+                        {progressBars} {displayProgress}%
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 pt-3 border-t border-white/5 text-[9px] text-center tracking-wider font-semibold">
+                      <div className="flex flex-col items-center">
+                        <span className="block text-muted/30 mb-0.5">ID_VAL</span>
+                        <span className="flex items-center gap-0.5 min-h-[15px]">
+                          {formData.name.length > 0 ? okBadge : pendingBadge}
+                          {focusedField === 'name' && cursorVisible && <span className="text-accent-blue font-bold animate-[pulse_0.5s_infinite]">▋</span>}
+                        </span>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <span className="block text-muted/30 mb-0.5">FREQ_VAL</span>
+                        <span className="flex items-center gap-0.5 min-h-[15px]">
+                          {isEmailValid ? okBadge : pendingBadge}
+                          {focusedField === 'email' && cursorVisible && <span className="text-accent-blue font-bold animate-[pulse_0.5s_infinite]">▋</span>}
+                        </span>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <span className="block text-muted/30 mb-0.5">DATA_VAL</span>
+                        <span className="flex items-center gap-0.5 min-h-[15px]">
+                          {formData.message.length >= 10 ? okBadge : pendingBadge}
+                          {focusedField === 'message' && cursorVisible && <span className="text-accent-blue font-bold animate-[pulse_0.5s_infinite]">▋</span>}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* 8. Scrolling Activity Log */}
+                    <div className="h-20 overflow-y-auto no-scrollbar font-mono text-[9px] text-accent-blue/50 mt-3 border-t border-white/5 pt-2 space-y-1">
+                      {activityLogs.map((log, i) => (
+                        <div key={i} className="flex gap-2">
+                          <span className="text-muted/30">{log.substring(0, 8)}</span>
+                          <span className="text-accent-blue/60">{log.substring(9)}</span>
+                        </div>
+                      ))}
+                      <div ref={logEndRef} />
+                    </div>
+                  </>
+                )}
               </div>
 
               {formStatus === 'success' ? (
@@ -347,7 +561,7 @@ const Contact: React.FC = () => {
                     <div className="space-y-3">
                       <div className="flex items-center justify-between ml-1">
                         <label className="text-[10px] font-mono text-accent-blue/60 uppercase tracking-[0.3em]">Identity</label>
-                        {isNameValid && <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]"></span>}
+                        {formData.name.length > 0 && <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]"></span>}
                       </div>
                       <div className="relative group/input">
                         <span className="absolute left-5 top-1/2 -translate-y-1/2 font-mono text-accent-blue text-sm opacity-40 pointer-events-none group-focus-within/input:opacity-100 transition-opacity font-bold">&gt;</span>
@@ -357,6 +571,8 @@ const Contact: React.FC = () => {
                           required
                           value={formData.name}
                           onChange={handleChange}
+                          onFocus={() => setFocusedField('name')}
+                          onBlur={() => setFocusedField(null)}
                           placeholder="Name / Organization"
                           className="w-full bg-white/5 border border-white/10 rounded-2xl pl-10 pr-6 py-5 focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue/30 transition-all placeholder:text-muted/20 font-mono text-sm focus:shadow-[0_0_20px_rgba(79,142,247,0.15)] focus:bg-accent-blue/5"
                         />
@@ -375,6 +591,8 @@ const Contact: React.FC = () => {
                           required
                           value={formData.email}
                           onChange={handleChange}
+                          onFocus={() => setFocusedField('email')}
+                          onBlur={() => setFocusedField(null)}
                           placeholder="email@domain.com"
                           className="w-full bg-white/5 border border-white/10 rounded-2xl pl-10 pr-6 py-5 focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue/30 transition-all placeholder:text-muted/20 font-mono text-sm focus:shadow-[0_0_20px_rgba(79,142,247,0.15)] focus:bg-accent-blue/5"
                         />
@@ -384,7 +602,7 @@ const Contact: React.FC = () => {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between ml-1">
                       <label className="text-[10px] font-mono text-accent-blue/60 uppercase tracking-[0.3em]">Transmission Data</label>
-                      {isMessageValid && <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]"></span>}
+                      {formData.message.length >= 10 && <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]"></span>}
                     </div>
                     <div className="relative group/input">
                       <span className="absolute left-5 top-6 font-mono text-accent-blue text-sm opacity-40 pointer-events-none group-focus-within/input:opacity-100 transition-opacity font-bold">&gt;</span>
@@ -394,6 +612,8 @@ const Contact: React.FC = () => {
                         required
                         value={formData.message}
                         onChange={handleChange}
+                        onFocus={() => setFocusedField('message')}
+                        onBlur={() => setFocusedField(null)}
                         placeholder="Briefly describe your requirements or inquiry..."
                         className="w-full bg-white/5 border border-white/10 rounded-2xl pl-10 pr-6 py-5 focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue/30 transition-all placeholder:text-muted/20 resize-none font-mono text-sm focus:shadow-[0_0_20px_rgba(79,142,247,0.15)] focus:bg-accent-blue/5"
                       ></textarea>
@@ -418,23 +638,23 @@ const Contact: React.FC = () => {
                   
                   <motion.button 
                     type="submit"
-                    disabled={formStatus === 'submitting' || !isFormValid}
-                    whileHover={isFormValid ? { scale: 1.02 } : {}}
-                    whileTap={isFormValid ? { scale: 0.98 } : {}}
+                    disabled={formStatus === 'submitting' || !isFormValidSubmit}
+                    whileHover={isFormValidSubmit ? { scale: 1.02 } : {}}
+                    whileTap={isFormValidSubmit ? { scale: 0.98 } : {}}
                     className={`w-full py-6 rounded-2xl font-bold flex items-center justify-center gap-4 transition-all overflow-hidden relative group ${
-                      isFormValid 
+                      isFormValidSubmit 
                         ? 'bg-accent-blue text-white shadow-[0_20px_40px_rgba(79,142,247,0.2)] hover:shadow-[0_25px_50px_rgba(79,142,247,0.4)]' 
                         : 'bg-white/5 text-muted/40 cursor-not-allowed border border-white/5'
                     }`}
                   >
                     <span className="relative z-10 flex items-center gap-3 text-lg">
                       {formStatus === 'submitting' ? 'Transmitting...' : 'Execute Connection'}
-                      {isFormValid && <Send size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />}
+                      {isFormValidSubmit && <Send size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />}
                     </span>
-                    {isFormValid && (
+                    {isFormValidSubmit && (
                       <div className="absolute inset-0 bg-gradient-to-r from-accent-blue to-accent-violet opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     )}
-                    {isFormValid && (
+                    {isFormValidSubmit && (
                       <motion.div 
                         animate={{ left: ['-100%', '200%'] }}
                         transition={{ repeat: Infinity, duration: 2.5, ease: "linear" }}
@@ -443,11 +663,11 @@ const Contact: React.FC = () => {
                     )}
                   </motion.button>
 
-                  {!isFormValid && (formData.name || formData.email || formData.message) && (
+                  {!isFormValidSubmit && (formData.name || formData.email || formData.message) && (
                     <p className="text-center text-[10px] text-accent-violet opacity-60 font-mono tracking-widest uppercase">
-                      {!formData.name ? 'Identity Required' : 
-                       !emailRegex.test(formData.email) ? 'Enter Valid Email Frequency' : 
-                       'Transmission Data Too Short'}
+                      {formData.name.trim().length <= 2 ? 'Identity Required (min 3 chars)' : 
+                       !isEmailValid ? 'Enter Valid Email Frequency' : 
+                       'Transmission Data Too Short (min 6 chars)'}
                     </p>
                   )}
                 </form>
