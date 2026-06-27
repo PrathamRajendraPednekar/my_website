@@ -467,12 +467,12 @@ const Contact: React.FC = () => {
               </div>
 
               {/* Telemetry Console Panel */}
-              <div className={`mb-8 p-5 rounded-2xl border font-mono text-xs space-y-3 relative overflow-hidden shadow-inner transition-all duration-500 ${borderClass}`}>
+              <div className={`mb-8 p-5 rounded-2xl border font-mono text-xs space-y-3 relative overflow-hidden shadow-inner transition-all duration-500 h-[240px] ${borderClass}`}>
                 <div className="absolute top-0 left-0 w-[2px] h-full bg-accent-blue/30"></div>
                 
                 {!bootSequenceComplete ? (
                   /* 6. Typewriter Boot Sequence Area */
-                  <div className="font-mono text-[10px] text-accent-blue space-y-1.5 py-2 min-h-[90px]">
+                  <div className="font-mono text-[10px] text-accent-blue space-y-1.5 py-2">
                     {bootLines.map((line, i) => (
                       <div key={i} className="tracking-wide">{line}</div>
                     ))}
@@ -559,9 +559,9 @@ const Contact: React.FC = () => {
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-3">
-                      <div className="flex items-center justify-between ml-1">
+                      <div className="flex items-center justify-between ml-1 min-h-[15px]">
                         <label className="text-[10px] font-mono text-accent-blue/60 uppercase tracking-[0.3em]">Identity</label>
-                        {formData.name.length > 0 && <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]"></span>}
+                        <span className={`w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] transition-all duration-300 ${formData.name.length > 0 ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}></span>
                       </div>
                       <div className="relative group/input">
                         <span className="absolute left-5 top-1/2 -translate-y-1/2 font-mono text-accent-blue text-sm opacity-40 pointer-events-none group-focus-within/input:opacity-100 transition-opacity font-bold">&gt;</span>
@@ -579,9 +579,9 @@ const Contact: React.FC = () => {
                       </div>
                     </div>
                     <div className="space-y-3">
-                      <div className="flex items-center justify-between ml-1">
+                      <div className="flex items-center justify-between ml-1 min-h-[15px]">
                         <label className="text-[10px] font-mono text-accent-blue/60 uppercase tracking-[0.3em]">Frequency</label>
-                        {isEmailValid && <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]"></span>}
+                        <span className={`w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] transition-all duration-300 ${isEmailValid ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}></span>
                       </div>
                       <div className="relative group/input">
                         <span className="absolute left-5 top-1/2 -translate-y-1/2 font-mono text-accent-blue text-sm opacity-40 pointer-events-none group-focus-within/input:opacity-100 transition-opacity font-bold">&gt;</span>
@@ -600,9 +600,9 @@ const Contact: React.FC = () => {
                     </div>
                   </div>
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between ml-1">
+                    <div className="flex items-center justify-between ml-1 min-h-[15px]">
                       <label className="text-[10px] font-mono text-accent-blue/60 uppercase tracking-[0.3em]">Transmission Data</label>
-                      {formData.message.length >= 10 && <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]"></span>}
+                      <span className={`w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e] transition-all duration-300 ${formData.message.length >= 10 ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}></span>
                     </div>
                     <div className="relative group/input">
                       <span className="absolute left-5 top-6 font-mono text-accent-blue text-sm opacity-40 pointer-events-none group-focus-within/input:opacity-100 transition-opacity font-bold">&gt;</span>
@@ -663,13 +663,14 @@ const Contact: React.FC = () => {
                     )}
                   </motion.button>
 
-                  {!isFormValidSubmit && (formData.name || formData.email || formData.message) && (
-                    <p className="text-center text-[10px] text-accent-violet opacity-60 font-mono tracking-widest uppercase">
-                      {formData.name.trim().length <= 2 ? 'Identity Required (min 3 chars)' : 
-                       !isEmailValid ? 'Enter Valid Email Frequency' : 
-                       'Transmission Data Too Short (min 6 chars)'}
-                    </p>
-                  )}
+                  <p className={`text-center text-[10px] text-accent-violet opacity-60 font-mono tracking-widest uppercase min-h-[15px] transition-all duration-300 ${
+                    (!isFormValidSubmit && (formData.name || formData.email || formData.message)) ? 'opacity-60 visible' : 'opacity-0 invisible'
+                  }`}>
+                    {formData.name.trim().length <= 2 ? 'Identity Required (min 3 chars)' : 
+                     !isEmailValid ? 'Enter Valid Email Frequency' : 
+                     formData.message.trim().length <= 5 ? 'Transmission Data Too Short (min 6 chars)' : 
+                     '\u00A0'}
+                  </p>
                 </form>
               )}
 
