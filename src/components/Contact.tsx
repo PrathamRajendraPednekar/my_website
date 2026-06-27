@@ -260,12 +260,32 @@ const Contact: React.FC = () => {
             viewport={{ once: true }}
           >
             <div className="glass p-8 md:p-12 rounded-[2.5rem] border-white/10 relative overflow-hidden backdrop-blur-3xl group shadow-[0_0_50px_rgba(0,0,0,0.3)]">
+              {/* Corner Tech Accents */}
+              <div className="absolute top-4 left-6 font-mono text-[8px] text-accent-blue/30 select-none tracking-widest hidden sm:block">
+                [SYS_OP: CONNECT]
+              </div>
+              <div className="absolute top-4 right-6 font-mono text-[8px] text-accent-violet/30 select-none tracking-widest hidden sm:block">
+                SECURE_LINK_v2.5
+              </div>
+              <div className="absolute bottom-4 left-6 font-mono text-[8px] text-muted/20 select-none tracking-widest hidden sm:block">
+                PORT: 443 // SSL_ON
+              </div>
+              <div className="absolute bottom-4 right-6 font-mono text-[8px] text-muted/20 select-none tracking-widest hidden sm:block">
+                GRID_LOC: 34.0522 // -118.2437
+              </div>
+
+              {/* Glowing Outer Border Wrapper */}
+              <div className="absolute inset-0 border border-white/10 rounded-[2.5rem] group-hover:border-accent-blue/30 transition-colors duration-500 pointer-events-none"></div>
+
               {/* Form Title */}
               <div className="mb-6">
-                <h4 className="text-3xl font-sora font-bold mb-3 flex items-center gap-3">
+                <h4 className="text-3xl font-sora font-bold mb-1 flex items-center gap-3">
                   Transmission Form
                   <Sparkles className="text-accent-blue animate-pulse" size={24} />
                 </h4>
+                <p className="text-[9px] font-mono text-muted/40 tracking-[0.22em] uppercase mb-4 animate-pulse">
+                  Establishing secure handshake pipeline...
+                </p>
                 <div className="w-16 h-[2px] bg-accent-blue rounded-full"></div>
               </div>
 
@@ -276,7 +296,7 @@ const Contact: React.FC = () => {
                   <span className="text-muted/50 text-[10px] tracking-wider uppercase">SYS_STATUS:</span>
                   <span className={`${statusColor} flex items-center gap-2 text-[11px]`}>
                     <span className={`w-1.5 h-1.5 rounded-full ${progress === 100 ? 'bg-green-500 animate-ping' : progress >= 33 ? 'bg-yellow-500 animate-pulse' : 'bg-red-500'}`}></span>
-                    {statusMessage}
+                    {statusMessage}<span className="animate-[pulse_1s_infinite] font-bold">_</span>
                   </span>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
@@ -329,30 +349,36 @@ const Contact: React.FC = () => {
                         <label className="text-[10px] font-mono text-accent-blue/60 uppercase tracking-[0.3em]">Identity</label>
                         {isNameValid && <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]"></span>}
                       </div>
-                      <input 
-                        name="name"
-                        type="text" 
-                        required
-                        value={formData.name}
-                        onChange={handleChange}
-                        placeholder="Name / Organization"
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue/30 transition-all placeholder:text-muted/20 font-mono text-sm focus:shadow-[0_0_20px_rgba(79,142,247,0.15)] focus:bg-accent-blue/5"
-                      />
+                      <div className="relative group/input">
+                        <span className="absolute left-5 top-1/2 -translate-y-1/2 font-mono text-accent-blue text-sm opacity-40 pointer-events-none group-focus-within/input:opacity-100 transition-opacity font-bold">&gt;</span>
+                        <input 
+                          name="name"
+                          type="text" 
+                          required
+                          value={formData.name}
+                          onChange={handleChange}
+                          placeholder="Name / Organization"
+                          className="w-full bg-white/5 border border-white/10 rounded-2xl pl-10 pr-6 py-5 focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue/30 transition-all placeholder:text-muted/20 font-mono text-sm focus:shadow-[0_0_20px_rgba(79,142,247,0.15)] focus:bg-accent-blue/5"
+                        />
+                      </div>
                     </div>
                     <div className="space-y-3">
                       <div className="flex items-center justify-between ml-1">
                         <label className="text-[10px] font-mono text-accent-blue/60 uppercase tracking-[0.3em]">Frequency</label>
                         {isEmailValid && <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]"></span>}
                       </div>
-                      <input 
-                        name="email"
-                        type="email" 
-                        required
-                        value={formData.email}
-                        onChange={handleChange}
-                        placeholder="email@domain.com"
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue/30 transition-all placeholder:text-muted/20 font-mono text-sm focus:shadow-[0_0_20px_rgba(79,142,247,0.15)] focus:bg-accent-blue/5"
-                      />
+                      <div className="relative group/input">
+                        <span className="absolute left-5 top-1/2 -translate-y-1/2 font-mono text-accent-blue text-sm opacity-40 pointer-events-none group-focus-within/input:opacity-100 transition-opacity font-bold">&gt;</span>
+                        <input 
+                          name="email"
+                          type="email" 
+                          required
+                          value={formData.email}
+                          onChange={handleChange}
+                          placeholder="email@domain.com"
+                          className="w-full bg-white/5 border border-white/10 rounded-2xl pl-10 pr-6 py-5 focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue/30 transition-all placeholder:text-muted/20 font-mono text-sm focus:shadow-[0_0_20px_rgba(79,142,247,0.15)] focus:bg-accent-blue/5"
+                        />
+                      </div>
                     </div>
                   </div>
                   <div className="space-y-3">
@@ -360,15 +386,18 @@ const Contact: React.FC = () => {
                       <label className="text-[10px] font-mono text-accent-blue/60 uppercase tracking-[0.3em]">Transmission Data</label>
                       {isMessageValid && <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]"></span>}
                     </div>
-                    <textarea 
-                      name="message"
-                      rows={5}
-                      required
-                      value={formData.message}
-                      onChange={handleChange}
-                      placeholder="Briefly describe your requirements or inquiry..."
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue/30 transition-all placeholder:text-muted/20 resize-none font-mono text-sm focus:shadow-[0_0_20px_rgba(79,142,247,0.15)] focus:bg-accent-blue/5"
-                    ></textarea>
+                    <div className="relative group/input">
+                      <span className="absolute left-5 top-6 font-mono text-accent-blue text-sm opacity-40 pointer-events-none group-focus-within/input:opacity-100 transition-opacity font-bold">&gt;</span>
+                      <textarea 
+                        name="message"
+                        rows={5}
+                        required
+                        value={formData.message}
+                        onChange={handleChange}
+                        placeholder="Briefly describe your requirements or inquiry..."
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl pl-10 pr-6 py-5 focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue/30 transition-all placeholder:text-muted/20 resize-none font-mono text-sm focus:shadow-[0_0_20px_rgba(79,142,247,0.15)] focus:bg-accent-blue/5"
+                      ></textarea>
+                    </div>
                   </div>
 
                   {formStatus === 'error' && (
