@@ -225,10 +225,10 @@ const Contact: React.FC = () => {
   }, []);
 
   // 8. Auto-scroll Activity Log
-  const logEndRef = useRef<HTMLDivElement>(null);
+  const logContainerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (logEndRef.current) {
-      logEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (logContainerRef.current) {
+      logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
     }
   }, [activityLogs]);
 
@@ -520,14 +520,16 @@ const Contact: React.FC = () => {
                     </div>
 
                     {/* 8. Scrolling Activity Log */}
-                    <div className="h-20 overflow-y-auto no-scrollbar font-mono text-[9px] text-accent-blue/50 mt-3 border-t border-white/5 pt-2 space-y-1">
+                    <div 
+                      ref={logContainerRef}
+                      className="h-20 overflow-y-auto no-scrollbar font-mono text-[9px] text-accent-blue/50 mt-3 border-t border-white/5 pt-2 space-y-1"
+                    >
                       {activityLogs.map((log, i) => (
                         <div key={i} className="flex gap-2">
                           <span className="text-muted/30">{log.substring(0, 8)}</span>
                           <span className="text-accent-blue/60">{log.substring(9)}</span>
                         </div>
                       ))}
-                      <div ref={logEndRef} />
                     </div>
                   </>
                 )}
