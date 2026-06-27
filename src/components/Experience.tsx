@@ -54,13 +54,24 @@ const Experience: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
           {/* Left Column - Timeline */}
           <div className="relative">
+            {/* Static Background Track */}
+            <div className="absolute left-0 top-0 w-[2px] h-full bg-white/5 rounded-full"></div>
+
+            {/* Glowing Active Track */}
             <motion.div 
               initial={{ height: 0 }}
               whileInView={{ height: '100%' }}
               viewport={{ once: true }}
               transition={{ duration: 1.5, ease: "easeInOut" }}
-              className="absolute left-0 top-0 w-[1px] bg-gradient-to-b from-accent-blue via-accent-violet to-transparent opacity-40 shadow-[0_0_8px_rgba(79,142,247,0.5)]"
-            ></motion.div>
+              className="absolute left-0 top-0 w-[2px] bg-gradient-to-b from-accent-blue via-accent-violet to-transparent opacity-60 shadow-[0_0_12px_rgba(79,142,247,0.4)] rounded-full"
+            >
+              {/* Traveling Signal Pulse */}
+              <motion.div 
+                animate={{ top: ['0%', '100%'] }}
+                transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
+                className="absolute left-[-1px] w-[4px] h-20 bg-gradient-to-b from-transparent via-accent-blue to-transparent blur-[2px] z-10"
+              />
+            </motion.div>
             
             <div className="space-y-12 pl-8">
               {experiences.map((exp, idx) => (
@@ -72,14 +83,16 @@ const Experience: React.FC = () => {
                   transition={{ duration: 0.8, delay: idx * 0.2 }}
                   className="relative group"
                 >
-                  {/* Timeline Dot */}
+                  {/* Timeline Concentric Node */}
                   <motion.div 
                     initial={{ scale: 0 }}
                     whileInView={{ scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ type: "spring", stiffness: 300, delay: 0.3 + (idx * 0.2) }}
-                    className="absolute -left-[35px] top-1 w-4 h-4 rounded-full bg-accent-blue shadow-[0_0_15px_rgba(79,142,247,1)] z-10"
-                  ></motion.div>
+                    className="absolute -left-[43px] top-1.5 w-6 h-6 rounded-full border border-accent-blue/30 bg-background flex items-center justify-center z-10 transition-all duration-500 group-hover:border-accent-blue group-hover:scale-110"
+                  >
+                    <div className="w-2 h-2 rounded-full bg-accent-blue shadow-[0_0_8px_#4f8ef7] transition-all duration-500 group-hover:bg-accent-violet group-hover:shadow-[0_0_12px_#7c3aed]"></div>
+                  </motion.div>
                   
                   <Tilt
                     perspective={1000}
