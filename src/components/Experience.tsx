@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Award, Briefcase, GraduationCap, BarChart, Shield, Layout, Brain } from 'lucide-react';
+import Tilt from 'react-parallax-tilt';
 
 const achievements = [
   { icon: <Award className="text-yellow-500" size={24} />, title: "Smart India Hackathon 2025", issuer: "College Level Round 1 Selected" },
@@ -80,36 +81,44 @@ const Experience: React.FC = () => {
                     className="absolute -left-[35px] top-1 w-4 h-4 rounded-full bg-accent-blue shadow-[0_0_15px_rgba(79,142,247,1)] z-10"
                   ></motion.div>
                   
-                  <div className="glass p-8 rounded-2xl hover:border-accent-blue/50 transition-all group-hover:bg-white/5 group-hover:translate-x-2 duration-500">
-                    <div className="flex items-center gap-4 mb-3">
-                      <div className="p-2 bg-accent-blue/10 rounded-lg text-accent-blue">
-                        {exp.icon}
+                  <Tilt
+                    perspective={1000}
+                    glareEnable={true}
+                    glareMaxOpacity={0.1}
+                    glareColor="#ffffff"
+                    glarePosition="all"
+                  >
+                    <div className="glass p-8 rounded-2xl hover:border-accent-blue/50 transition-all group-hover:bg-white/5 duration-500 cursor-grab active:cursor-grabbing">
+                      <div className="flex items-center gap-4 mb-3">
+                        <div className="p-2 bg-accent-blue/10 rounded-lg text-accent-blue">
+                          {exp.icon}
+                        </div>
+                        <h3 className="text-xl font-sora font-bold text-text">{exp.title}</h3>
                       </div>
-                      <h3 className="text-xl font-sora font-bold text-text">{exp.title}</h3>
-                    </div>
-                    <p className="text-accent-violet font-mono text-sm mb-4 font-semibold tracking-wide">{exp.company} | {exp.period}</p>
-                    
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {exp.tags.map((tag, tIdx) => {
-                        const isEven = tIdx % 2 === 0;
-                        const badgeClass = isEven
-                          ? "bg-accent-blue/5 border-accent-blue/20 text-accent-blue"
-                          : "bg-accent-violet/5 border-accent-violet/20 text-accent-violet";
-                        return (
-                          <span 
-                            key={tIdx} 
-                            className={`px-3 py-1 rounded-full border text-[10px] font-mono uppercase tracking-widest ${badgeClass}`}
-                          >
-                            {tag}
-                          </span>
-                        );
-                      })}
-                    </div>
+                      <p className="text-accent-violet font-mono text-sm mb-4 font-semibold tracking-wide">{exp.company} | {exp.period}</p>
+                      
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {exp.tags.map((tag, tIdx) => {
+                          const isEven = tIdx % 2 === 0;
+                          const badgeClass = isEven
+                            ? "bg-accent-blue/5 border-accent-blue/20 text-accent-blue"
+                            : "bg-accent-violet/5 border-accent-violet/20 text-accent-violet";
+                          return (
+                            <span 
+                              key={tIdx} 
+                              className={`px-3 py-1 rounded-full border text-[10px] font-mono uppercase tracking-widest ${badgeClass}`}
+                            >
+                              {tag}
+                            </span>
+                          );
+                        })}
+                      </div>
 
-                    <p className="text-muted text-sm leading-relaxed border-l-2 border-white/5 pl-4 group-hover:border-accent-blue/30 transition-colors">
-                      {exp.description}
-                    </p>
-                  </div>
+                      <p className="text-muted text-sm leading-relaxed border-l-2 border-white/5 pl-4 group-hover:border-accent-blue/30 transition-colors">
+                        {exp.description}
+                      </p>
+                    </div>
+                  </Tilt>
                 </motion.div>
               ))}
             </div>
