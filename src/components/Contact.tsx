@@ -119,9 +119,33 @@ const Contact: React.FC = () => {
   // Stricter Email Regex for validation
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   
-  const isFormValid = formData.name.trim().length > 2 && 
-                      emailRegex.test(formData.email) && 
-                      formData.message.trim().length > 5;
+  const isNameValid = formData.name.trim().length > 2;
+  const isEmailValid = emailRegex.test(formData.email);
+  const isMessageValid = formData.message.trim().length > 5;
+  const isFormValid = isNameValid && isEmailValid && isMessageValid;
+
+  let progress = 0;
+  if (isNameValid) progress += 33;
+  if (isEmailValid) progress += 33;
+  if (isMessageValid) progress += 34;
+
+  let statusMessage = "OFFLINE";
+  let statusColor = "text-red-400";
+  let progressBars = "░░░░░░░░░░░░░░░░░░░░ 0%";
+
+  if (progress === 100) {
+    statusMessage = "READY TO TRANSMIT";
+    statusColor = "text-green-400 font-bold";
+    progressBars = "████████████████████ 100%";
+  } else if (progress >= 66) {
+    statusMessage = "LINK ESTABLISHED";
+    statusColor = "text-yellow-400 font-semibold";
+    progressBars = "██████████████░░░░░░ 66%";
+  } else if (progress >= 33) {
+    statusMessage = "SIGNAL WEAK";
+    statusColor = "text-orange-400";
+    progressBars = "███████░░░░░░░░░░░░░ 33%";
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -237,12 +261,42 @@ const Contact: React.FC = () => {
           >
             <div className="glass p-8 md:p-12 rounded-[2.5rem] border-white/10 relative overflow-hidden backdrop-blur-3xl group shadow-[0_0_50px_rgba(0,0,0,0.3)]">
               {/* Form Title */}
-              <div className="mb-10">
+              <div className="mb-6">
                 <h4 className="text-3xl font-sora font-bold mb-3 flex items-center gap-3">
                   Transmission Form
-                  <Sparkles className="text-accent-blue" size={24} />
+                  <Sparkles className="text-accent-blue animate-pulse" size={24} />
                 </h4>
                 <div className="w-16 h-[2px] bg-accent-blue rounded-full"></div>
+              </div>
+
+              {/* Telemetry Console Panel */}
+              <div className="mb-8 p-5 rounded-2xl bg-black/40 border border-white/5 font-mono text-xs space-y-3 relative overflow-hidden shadow-inner">
+                <div className="absolute top-0 left-0 w-[2px] h-full bg-accent-blue/30"></div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted/50 text-[10px] tracking-wider uppercase">SYS_STATUS:</span>
+                  <span className={`${statusColor} flex items-center gap-2 text-[11px]`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${progress === 100 ? 'bg-green-500 animate-ping' : progress >= 33 ? 'bg-yellow-500 animate-pulse' : 'bg-red-500'}`}></span>
+                    {statusMessage}
+                  </span>
+                </div>
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
+                  <span className="text-muted/50 text-[10px] tracking-wider uppercase">SIGNAL_STR:</span>
+                  <span className="text-accent-blue text-[11px] select-all font-bold tracking-tight">{progressBars}</span>
+                </div>
+                <div className="grid grid-cols-3 gap-2 pt-3 border-t border-white/5 text-[9px] text-center tracking-wider font-semibold">
+                  <div>
+                    <span className="block text-muted/30 mb-0.5">ID_VAL</span>
+                    <span className={isNameValid ? "text-green-400" : "text-muted/30"}>{isNameValid ? "VALIDATED" : "PENDING"}</span>
+                  </div>
+                  <div>
+                    <span className="block text-muted/30 mb-0.5">FREQ_VAL</span>
+                    <span className={isEmailValid ? "text-green-400" : "text-muted/30"}>{isEmailValid ? "VALIDATED" : "PENDING"}</span>
+                  </div>
+                  <div>
+                    <span className="block text-muted/30 mb-0.5">DATA_VAL</span>
+                    <span className={isMessageValid ? "text-green-400" : "text-muted/30"}>{isMessageValid ? "VALIDATED" : "PENDING"}</span>
+                  </div>
+                </div>
               </div>
 
               {formStatus === 'success' ? (
@@ -271,7 +325,10 @@ const Contact: React.FC = () => {
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-3">
-                      <label className="text-[10px] font-mono text-accent-blue/60 uppercase tracking-[0.3em] ml-1">Identity</label>
+                      <div className="flex items-center justify-between ml-1">
+                        <label className="text-[10px] font-mono text-accent-blue/60 uppercase tracking-[0.3em]">Identity</label>
+                        {isNameValid && <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]"></span>}
+                      </div>
                       <input 
                         name="name"
                         type="text" 
@@ -279,11 +336,14 @@ const Contact: React.FC = () => {
                         value={formData.name}
                         onChange={handleChange}
                         placeholder="Name / Organization"
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue/30 transition-all placeholder:text-muted/20"
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue/30 transition-all placeholder:text-muted/20 font-mono text-sm focus:shadow-[0_0_20px_rgba(79,142,247,0.15)] focus:bg-accent-blue/5"
                       />
                     </div>
                     <div className="space-y-3">
-                      <label className="text-[10px] font-mono text-accent-blue/60 uppercase tracking-[0.3em] ml-1">Frequency</label>
+                      <div className="flex items-center justify-between ml-1">
+                        <label className="text-[10px] font-mono text-accent-blue/60 uppercase tracking-[0.3em]">Frequency</label>
+                        {isEmailValid && <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]"></span>}
+                      </div>
                       <input 
                         name="email"
                         type="email" 
@@ -291,12 +351,15 @@ const Contact: React.FC = () => {
                         value={formData.email}
                         onChange={handleChange}
                         placeholder="email@domain.com"
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue/30 transition-all placeholder:text-muted/20"
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue/30 transition-all placeholder:text-muted/20 font-mono text-sm focus:shadow-[0_0_20px_rgba(79,142,247,0.15)] focus:bg-accent-blue/5"
                       />
                     </div>
                   </div>
                   <div className="space-y-3">
-                    <label className="text-[10px] font-mono text-accent-blue/60 uppercase tracking-[0.3em] ml-1">Transmission Data</label>
+                    <div className="flex items-center justify-between ml-1">
+                      <label className="text-[10px] font-mono text-accent-blue/60 uppercase tracking-[0.3em]">Transmission Data</label>
+                      {isMessageValid && <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]"></span>}
+                    </div>
                     <textarea 
                       name="message"
                       rows={5}
@@ -304,7 +367,7 @@ const Contact: React.FC = () => {
                       value={formData.message}
                       onChange={handleChange}
                       placeholder="Briefly describe your requirements or inquiry..."
-                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue/30 transition-all placeholder:text-muted/20 resize-none"
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue/30 transition-all placeholder:text-muted/20 resize-none font-mono text-sm focus:shadow-[0_0_20px_rgba(79,142,247,0.15)] focus:bg-accent-blue/5"
                     ></textarea>
                   </div>
 
@@ -342,6 +405,13 @@ const Contact: React.FC = () => {
                     {isFormValid && (
                       <div className="absolute inset-0 bg-gradient-to-r from-accent-blue to-accent-violet opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     )}
+                    {isFormValid && (
+                      <motion.div 
+                        animate={{ left: ['-100%', '200%'] }}
+                        transition={{ repeat: Infinity, duration: 2.5, ease: "linear" }}
+                        className="absolute top-0 w-1/3 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 z-20 pointer-events-none"
+                      />
+                    )}
                   </motion.button>
 
                   {!isFormValid && (formData.name || formData.email || formData.message) && (
@@ -354,6 +424,9 @@ const Contact: React.FC = () => {
                 </form>
               )}
 
+              {/* Card Hover Glow */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-accent-blue/5 via-transparent to-accent-violet/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none -z-10"></div>
+              
               {/* Decorative internal elements */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-accent-blue/10 blur-3xl pointer-events-none"></div>
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-accent-violet/10 blur-3xl pointer-events-none"></div>
