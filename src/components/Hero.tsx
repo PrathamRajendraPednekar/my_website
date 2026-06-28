@@ -86,52 +86,77 @@ const Hero: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            {/* Profile Photo Avatar */}
-            <div className="flex items-center gap-5 mb-8">
-              {/* Avatar with glowing rings */}
+            {/* Profile Photo — Premium Avatar Card */}
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="mb-10 flex items-end gap-6"
+            >
+              {/* Avatar Frame */}
               <div className="relative flex-shrink-0">
-                {/* Outer slow-rotating ring */}
+                {/* Ambient outer glow */}
+                <div className="absolute -inset-4 rounded-3xl bg-accent-blue/10 blur-2xl pointer-events-none" />
+
+                {/* Rotating gradient ring */}
                 <motion.div
                   animate={{ rotate: 360 }}
-                  transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-                  className="absolute -inset-[6px] rounded-full border border-accent-blue/30 border-dashed"
+                  transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                  className="absolute -inset-[3px] rounded-3xl"
+                  style={{
+                    background: "conic-gradient(from 0deg, #4f8ef7, #7c3aed, #4f8ef7, #7c3aed, #4f8ef7)",
+                    borderRadius: "1.5rem",
+                  }}
                 />
-                {/* Middle pulsing glow ring */}
-                <motion.div
-                  animate={{ scale: [1, 1.06, 1], opacity: [0.4, 0.8, 0.4] }}
-                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute -inset-[3px] rounded-full border border-accent-blue/50"
-                />
-                {/* Photo circle */}
-                <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-accent-blue/60 shadow-[0_0_20px_rgba(79,142,247,0.4)] relative">
+
+                {/* Glass photo frame */}
+                <div className="relative w-36 h-44 rounded-[1.4rem] overflow-hidden bg-background border border-white/10">
                   <img
-                    src="/profile.png"
+                    src="/profile.jpg"
                     alt="Pratham Pednekar"
-                    className="w-full h-full object-cover object-top scale-110"
+                    className="w-full h-full object-cover object-top"
+                    style={{ objectPosition: "50% 10%" }}
                   />
+                  {/* Bottom gradient fade */}
+                  <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-background/70 to-transparent" />
                 </div>
-                {/* Online status dot */}
-                <div className="absolute bottom-0.5 right-0.5 w-4 h-4 bg-green-400 rounded-full border-2 border-background shadow-[0_0_8px_rgba(74,222,128,0.7)]">
-                  <div className="w-full h-full rounded-full bg-green-400 animate-ping opacity-75" />
+
+                {/* Live status dot bottom-right */}
+                <div className="absolute -bottom-1.5 -right-1.5 flex items-center justify-center w-6 h-6 rounded-full bg-background border border-white/10 shadow-lg">
+                  <div className="w-3 h-3 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.8)]">
+                    <div className="w-full h-full rounded-full bg-green-400 animate-ping opacity-60" />
+                  </div>
                 </div>
               </div>
 
-              {/* Name chip and status badge */}
-              <div className="flex flex-col gap-1.5">
-                <span className="font-mono text-[11px] text-accent-blue/70 tracking-[0.25em] uppercase">Pratham Pednekar</span>
-                <div className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse shadow-[0_0_6px_rgba(74,222,128,0.8)]" />
-                  <span className="font-mono text-[10px] text-green-400/80 tracking-widest uppercase">Open to Work</span>
+              {/* Side info stack */}
+              <div className="flex flex-col gap-3 pb-1">
+                {/* Name monospace label */}
+                <div>
+                  <p className="font-mono text-[10px] text-accent-blue/50 tracking-[0.3em] uppercase mb-1">Identity</p>
+                  <p className="font-sora font-bold text-lg leading-tight text-white">Pratham<br/>Pednekar</p>
                 </div>
-                <div className="flex gap-1.5 mt-0.5">
-                  {["AI/ML", "CV", "Python"].map(tag => (
-                    <span key={tag} className="text-[9px] font-mono px-2 py-0.5 rounded-full border border-accent-blue/20 text-accent-blue/60 bg-accent-blue/5">
-                      {tag}
+
+                {/* Status badge */}
+                <div className="flex items-center gap-2 glass px-3 py-1.5 rounded-full border border-green-500/20 w-fit">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shadow-[0_0_6px_rgba(74,222,128,0.9)]" />
+                  <span className="font-mono text-[9px] tracking-[0.2em] text-green-400 uppercase">Open to Work</span>
+                </div>
+
+                {/* Skill tags */}
+                <div className="flex flex-col gap-1.5">
+                  {[
+                    { label: "AI / ML", color: "border-accent-blue/30 text-accent-blue/70 bg-accent-blue/5" },
+                    { label: "Computer Vision", color: "border-accent-violet/30 text-accent-violet/70 bg-accent-violet/5" },
+                    { label: "Python", color: "border-accent-blue/30 text-accent-blue/70 bg-accent-blue/5" },
+                  ].map(tag => (
+                    <span key={tag.label} className={`font-mono text-[9px] px-2.5 py-1 rounded-lg border tracking-widest uppercase w-fit ${tag.color}`}>
+                      {tag.label}
                     </span>
                   ))}
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             <p className="mono text-accent-blue font-bold mb-4 tracking-[0.2em] text-sm uppercase">Hi, I'm</p>
             <h1 className="text-6xl md:text-8xl font-sora font-black mb-6 leading-none flex flex-col">
