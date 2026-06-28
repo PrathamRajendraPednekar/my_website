@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import cityShelfImg from '../assets/homepage.png';
 import { motion, AnimatePresence } from 'framer-motion';
 import Tilt from 'react-parallax-tilt';
 import { ExternalLink, RotateCw, CheckCircle2 } from 'lucide-react';
@@ -23,13 +24,13 @@ const projects = [
     image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=500&auto=format&fit=crop"
   },
   {
-    title: "YCSA Analyzer",
-    tags: ["NLP", "Sentiment Analysis"],
-    description: "Automatically analyzes YouTube comments using NLP and ML to classify them as Positive, Negative, or Neutral — helping creators understand audience sentiment.",
-    features: ["YouTube API", "Real-time Processing", "Creator Dashboard"],
-    accent: "#4f8ef7",
-    github: "https://github.com/PrathamRajendraPednekar/YCSA",
-    image: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=500&auto=format&fit=crop"
+    title: "CityShelf",
+    tags: ["Full Stack", "React", "Node.js"],
+    description: "A local business discovery platform that helps users find trusted chai stalls, tailors, salons, repair shops, and tiffin counters across Indian cities — the shops your city actually loves.",
+    features: ["Local Business Search", "Map Integration", "Reviews & Ratings"],
+    accent: "#f97316",
+    github: "https://github.com/PrathamRajendraPednekar/CityShelf",
+    image: cityShelfImg
   },
   {
     title: "David AI",
