@@ -146,8 +146,13 @@ const Experience: React.FC = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 + (i * 0.1), duration: 0.5 }}
-                whileHover={{ x: 10, backgroundColor: "rgba(255,255,255,0.06)" }}
-                className="glass flex items-center gap-6 p-5 rounded-2xl border-white/5 hover:border-accent-blue/30 transition-all group cursor-default"
+                whileHover={{ 
+                  y: -6, 
+                  scale: 1.02, 
+                  backgroundColor: "rgba(255, 255, 255, 0.08)",
+                  boxShadow: "0 12px 20px -8px rgba(79, 142, 247, 0.2)"
+                }}
+                className="glass flex items-center gap-6 p-5 rounded-2xl border-white/5 hover:border-accent-blue/30 transition-all duration-300 group cursor-default"
               >
                 <div className="p-3 rounded-xl bg-white/5 group-hover:bg-accent-blue/10 group-hover:scale-110 transition-all duration-300">
                   {item.icon}
