@@ -148,65 +148,94 @@ const Hero: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Right Side - Visual Elements */}
+        {/* Right Side - Photo Scanner Visuals */}
         <motion.div
-          initial={{ opacity: 0, x: 50, rotate: 5 }}
-          animate={{ opacity: 1, x: 0, rotate: -2 }}
-          transition={{ delay: 1, duration: 1 }}
-          className="hidden md:block md:w-2/5 relative"
+          initial={{ opacity: 0, scale: 0.9, rotate: 3 }}
+          animate={{ opacity: 1, scale: 1, rotate: -1 }}
+          transition={{ delay: 0.8, duration: 0.8 }}
+          className="w-full md:w-2/5 flex justify-center items-center relative order-first md:order-last mb-16 md:mb-0"
         >
-          {/* Code Block */}
           <Tilt
             perspective={1000}
             glareEnable={true}
-            glareMaxOpacity={0.1}
-            glareColor="#ffffff"
+            glareMaxOpacity={0.15}
+            glareColor="#4f8ef7"
             glarePosition="all"
+            className="w-full max-w-[320px]"
           >
-            <div className="glass p-6 rounded-2xl shadow-2xl relative overflow-hidden backdrop-blur-2xl transition-all duration-300 hover:shadow-[0_0_40px_rgba(79,142,247,0.2)]">
-              <div className="flex space-x-2 mb-4">
-                <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
-                <div className="w-3 h-3 rounded-full bg-yellow-500/50"></div>
-                <div className="w-3 h-3 rounded-full bg-green-500/50"></div>
+            <div className="glass p-4 rounded-[2rem] shadow-2xl relative overflow-hidden backdrop-blur-2xl border border-white/10 group transition-all duration-500 hover:shadow-[0_0_50px_rgba(79,142,247,0.25)] hover:border-accent-blue/30">
+              
+              {/* Outer corner tech brackets */}
+              <div className="absolute top-3 left-3 w-4 h-4 border-t-2 border-l-2 border-accent-blue/40 pointer-events-none"></div>
+              <div className="absolute top-3 right-3 w-4 h-4 border-t-2 border-r-2 border-accent-blue/40 pointer-events-none"></div>
+              <div className="absolute bottom-3 left-3 w-4 h-4 border-b-2 border-l-2 border-accent-blue/40 pointer-events-none"></div>
+              <div className="absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-accent-blue/40 pointer-events-none"></div>
+
+              {/* Holographic Header Bar */}
+              <div className="flex justify-between items-center mb-3 px-1 font-mono text-[9px] text-accent-blue/60 tracking-wider">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent-blue animate-pulse"></span>
+                  CV_STREAM::CAM_01
+                </span>
+                <span>FPS: 60.00</span>
               </div>
-              <pre className="mono text-sm leading-relaxed">
-                <code className="block">
-                  <span className="text-[#6a9955]"># Pratham's ML Pipeline</span><br />
-                  <span className="text-[#569cd6]">model</span> = Sequential([<br />
-                  {"  "}Dense(<span className="text-[#b5cea8]">128</span>, activation=<span className="text-[#ce9178]">'relu'</span>),<br />
-                  {"  "}Dropout(<span className="text-[#b5cea8]">0.2</span>),<br />
-                  {"  "}Dense(<span className="text-[#b5cea8]">64</span>, activation=<span className="text-[#ce9178]">'relu'</span>),<br />
-                  {"  "}Dense(<span className="text-[#b5cea8]">1</span>, activation=<span className="text-[#ce9178]">'sigmoid'</span>)<br />
-                  ])<br />
-                  <br />
-                  <span className="text-[#569cd6]">model</span>.compile(<br />
-                  {"  "}optimizer=<span className="text-[#ce9178]">'adam'</span>,<br />
-                  {"  "}loss=<span className="text-[#ce9178]">'binary_crossentropy'</span><br />
-                  )
-                </code>
-              </pre>
+
+              {/* Main Image Container */}
+              <div className="relative aspect-[4/5] rounded-[1.5rem] overflow-hidden bg-black/40 border border-white/5">
+                <img 
+                  src="/profile.png" 
+                  alt="Pratham Pednekar" 
+                  className="w-full h-full object-cover transition-all duration-700 grayscale-[15%] group-hover:grayscale-0 group-hover:scale-105"
+                />
+
+                {/* Laser Scanning line sweep */}
+                <div className="absolute left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-accent-blue to-transparent shadow-[0_0_10px_#4f8ef7] scanner-laser pointer-events-none"></div>
+
+                {/* YOLO / Face Tracking Overlay Box */}
+                <div className="absolute top-[18%] left-[22%] w-[56%] h-[48%] border border-emerald-400/50 rounded-lg pointer-events-none group-hover:border-emerald-400/80 transition-colors">
+                  {/* Corner marks */}
+                  <div className="absolute -top-0.5 -left-0.5 w-2 h-2 border-t-2 border-l-2 border-emerald-400"></div>
+                  <div className="absolute -top-0.5 -right-0.5 w-2 h-2 border-t-2 border-r-2 border-emerald-400"></div>
+                  <div className="absolute -bottom-0.5 -left-0.5 w-2 h-2 border-b-2 border-l-2 border-emerald-400"></div>
+                  <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 border-b-2 border-r-2 border-emerald-400"></div>
+                  
+                  {/* Confidence tag */}
+                  <div className="absolute -top-5 left-0 font-mono text-[8px] text-emerald-400 bg-background/90 border border-emerald-400/30 px-1 py-0.5 rounded shadow-[0_0_8px_rgba(52,211,153,0.2)]">
+                    FACE::PRATHAM [99.8%]
+                  </div>
+                </div>
+
+                {/* Grid Overlay Pattern */}
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none"></div>
+              </div>
+
+              {/* Holographic Footer Bar */}
+              <div className="mt-3 px-1 flex justify-between items-center font-mono text-[8px] text-muted/40 tracking-wider">
+                <span>MODEL: YOLOv8_FACE</span>
+                <span>CONFIDENCE: 99.82%</span>
+              </div>
             </div>
           </Tilt>
 
           {/* Floating Badges */}
           <motion.div
-            animate={{ y: [0, -10, 0] }}
+            animate={{ y: [0, -8, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -top-4 -right-4 glass px-4 py-2 rounded-full font-mono text-xs text-accent-blue border border-accent-blue/30 shadow-[0_0_15px_rgba(79,142,247,0.3)]"
+            className="absolute -top-4 -right-4 glass px-4 py-2 rounded-full font-mono text-xs text-accent-blue border border-accent-blue/30 shadow-[0_0_15px_rgba(79,142,247,0.3)] z-20"
           >
             AI/ML
           </motion.div>
           <motion.div
-            animate={{ y: [0, 10, 0] }}
+            animate={{ y: [0, 8, 0] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-            className="absolute top-1/2 -left-8 glass px-4 py-2 rounded-full font-mono text-xs text-accent-violet border border-accent-violet/30 shadow-[0_0_15px_rgba(124,58,237,0.3)]"
+            className="absolute top-1/2 -left-8 glass px-4 py-2 rounded-full font-mono text-xs text-accent-violet border border-accent-violet/30 shadow-[0_0_15px_rgba(124,58,237,0.3)] z-20"
           >
             Python
           </motion.div>
           <motion.div
-            animate={{ x: [0, 10, 0] }}
+            animate={{ x: [0, 8, 0] }}
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-            className="absolute -bottom-4 right-8 glass px-4 py-2 rounded-full font-mono text-xs text-accent-blue border border-accent-blue/30 shadow-[0_0_15px_rgba(79,142,247,0.3)]"
+            className="absolute -bottom-4 right-8 glass px-4 py-2 rounded-full font-mono text-xs text-accent-blue border border-accent-blue/30 shadow-[0_0_15px_rgba(79,142,247,0.3)] z-20"
           >
             Computer Vision
           </motion.div>
