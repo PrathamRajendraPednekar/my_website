@@ -33,7 +33,7 @@ const experiences = [
 
 const Experience: React.FC = () => {
   return (
-    <section id="experience" className="relative py-32 overflow-hidden bg-background">
+    <section id="experience" className="relative py-16 md:py-32 overflow-hidden bg-background">
       {/* Ghost Number */}
       <div className="absolute top-20 right-10 text-[15vw] font-sora font-black opacity-[0.03] select-none pointer-events-none">
         04
@@ -44,7 +44,7 @@ const Experience: React.FC = () => {
           initial={{ opacity: 0, x: 20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="text-4xl md:text-5xl font-sora font-bold mb-16 flex items-center justify-end gap-4"
+          className="text-3xl md:text-5xl font-sora font-bold mb-10 md:mb-16 flex items-center justify-start md:justify-end gap-4 flex-wrap"
         >
           <div className="h-[1px] w-32 bg-accent-blue/30 hidden md:block"></div>
           Experience & Achievements

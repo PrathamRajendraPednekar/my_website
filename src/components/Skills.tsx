@@ -75,7 +75,7 @@ const cardVariants = {
 
 const Skills: React.FC = () => {
   return (
-    <section id="skills" className="relative py-32 overflow-hidden bg-background">
+    <section id="skills" className="relative py-16 md:py-32 overflow-hidden bg-background">
       {/* Background Decorative Elements */}
       <div className="absolute -top-24 -right-24 w-96 h-96 bg-accent-blue/10 blur-[120px] rounded-full"></div>
       <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent-violet/10 blur-[120px] rounded-full"></div>
@@ -92,12 +92,12 @@ const Skills: React.FC = () => {
           viewport={{ once: true }}
           className="mb-20"
         >
-          <h2 className="text-4xl md:text-6xl font-sora font-bold flex items-center gap-4">
+          <h2 className="text-3xl sm:text-4xl md:text-6xl font-sora font-bold flex items-center gap-4">
             <span className="text-accent-blue font-mono text-2xl md:text-3xl">02.</span>
             Tech Arsenal
             <div className="h-[2px] flex-grow bg-gradient-to-r from-accent-blue/50 to-transparent ml-4"></div>
           </h2>
-          <p className="text-muted mt-6 max-w-2xl text-lg font-dm">
+          <p className="text-muted mt-4 md:mt-6 max-w-2xl text-base md:text-lg font-dm">
             A comprehensive list of technologies and tools I use to bring intelligent solutions to life.
           </p>
         </motion.div>

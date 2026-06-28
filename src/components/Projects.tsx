@@ -55,7 +55,7 @@ const Projects: React.FC = () => {
   const [hovered, setHovered] = useState<number | null>(null);
 
   return (
-    <section id="projects" className="relative py-32 overflow-hidden section-clip-reverse bg-navy/20">
+    <section id="projects" className="relative py-16 md:py-32 overflow-hidden section-clip-reverse bg-navy/20">
       {/* Ghost Number */}
       <div className="absolute top-20 left-10 text-[15vw] font-sora font-black opacity-[0.03] select-none pointer-events-none">
         03
@@ -66,7 +66,7 @@ const Projects: React.FC = () => {
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="text-4xl md:text-5xl font-sora font-bold mb-16 flex items-center gap-4"
+          className="text-3xl md:text-5xl font-sora font-bold mb-10 md:mb-16 flex items-center gap-4"
         >
           <span className="text-accent-blue font-mono text-2xl">03.</span>
           Things I've Built
@@ -81,7 +81,7 @@ const Projects: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
-              className={`h-[480px] ${idx % 2 === 1 ? 'md:translate-y-12' : ''}`}
+              className={`min-h-[420px] md:h-[480px] ${idx % 2 === 1 ? 'md:translate-y-12' : ''}`}
               style={{ perspective: "1500px" }}
             >
               <motion.div

@@ -48,7 +48,7 @@ const NeuralCore: React.FC = () => {
   ];
 
   return (
-    <div className="relative w-80 h-80 md:w-[450px] md:h-[450px] flex items-center justify-center">
+    <div className="relative w-64 h-64 sm:w-80 sm:h-80 md:w-[450px] md:h-[450px] flex items-center justify-center">
       {/* Outer Rotating Animation Layer - WITH 8 ICONS */}
       <motion.div
         animate={{ rotate: 360 }}
@@ -62,7 +62,7 @@ const NeuralCore: React.FC = () => {
               key={i} 
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
               style={{
-                transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(-225px) rotate(-${angle}deg)`
+                transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(clamp(-160px, -30vw, -225px)) rotate(-${angle}deg)`
               }}
             >
               <motion.div
@@ -361,7 +361,7 @@ const Contact: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="relative py-32 overflow-hidden bg-background">
+    <section id="contact" className="relative py-16 md:py-32 overflow-hidden bg-background">
       {/* Background Decorative Elements */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-accent-blue/5 blur-[120px] rounded-full pointer-events-none animate-pulse"></div>
       <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-accent-violet/5 blur-[150px] rounded-full pointer-events-none animate-bounce" style={{ animationDuration: '10s' }}></div>
@@ -376,14 +376,14 @@ const Contact: React.FC = () => {
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="text-4xl md:text-5xl font-sora font-bold mb-16 flex items-center gap-4"
+          className="text-3xl md:text-5xl font-sora font-bold mb-10 md:mb-16 flex items-center gap-4"
         >
           <span className="text-accent-blue font-mono text-2xl">05.</span>
           Let's Connect
           <div className="h-[1px] w-32 bg-accent-blue/30 hidden md:block"></div>
         </motion.h2>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center">
           {/* Left Side: Creative Animated Visuals */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
@@ -407,8 +407,8 @@ const Contact: React.FC = () => {
             </div>
 
             <div className="text-center lg:text-left mt-16">
-              <h3 className="text-4xl font-sora font-bold mb-6 text-glow tracking-tight">Handshake Initialized</h3>
-              <p className="text-muted text-lg mb-10 max-w-md leading-relaxed">
+              <h3 className="text-2xl md:text-4xl font-sora font-bold mb-4 md:mb-6 text-glow tracking-tight">Handshake Initialized</h3>
+              <p className="text-muted text-base md:text-lg mb-6 md:mb-10 max-w-md leading-relaxed">
                 Ready to transform your ideas into intelligent architectures. Send a transmission below to start our collaboration.
               </p>
 
@@ -436,7 +436,7 @@ const Contact: React.FC = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
           >
-            <div className="glass p-8 md:p-12 rounded-[2.5rem] border-white/10 relative overflow-hidden backdrop-blur-3xl group shadow-[0_0_50px_rgba(0,0,0,0.3)]">
+            <div className="glass p-6 md:p-12 rounded-[2rem] md:rounded-[2.5rem] border-white/10 relative overflow-hidden backdrop-blur-3xl group shadow-[0_0_50px_rgba(0,0,0,0.3)]">
               {/* Corner Tech Accents */}
               <div className="absolute top-4 left-6 font-mono text-[8px] text-accent-blue/30 select-none tracking-widest hidden sm:block">
                 [SYS_OP: CONNECT]
@@ -467,7 +467,7 @@ const Contact: React.FC = () => {
               </div>
 
               {/* Telemetry Console Panel */}
-              <div className={`mb-8 p-5 rounded-2xl border font-mono text-xs space-y-3 relative overflow-hidden shadow-inner transition-all duration-500 h-[240px] ${borderClass}`}>
+              <div className={`mb-8 p-5 rounded-2xl border font-mono text-xs space-y-3 relative overflow-hidden shadow-inner transition-all duration-500 min-h-[180px] md:h-[240px] ${borderClass}`}>
                 <div className="absolute top-0 left-0 w-[2px] h-full bg-accent-blue/30"></div>
                 
                 {!bootSequenceComplete ? (

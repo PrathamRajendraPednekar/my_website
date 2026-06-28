@@ -76,8 +76,8 @@ const Hero: React.FC = () => {
       )}
 
       {/* Decorative Background Elements */}
-      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-accent-blue/5 blur-[150px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-accent-violet/5 blur-[120px] rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
+      <div className="absolute top-0 right-0 w-[300px] h-[300px] sm:w-[800px] sm:h-[800px] bg-accent-blue/5 blur-[150px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-[250px] h-[250px] sm:w-[600px] sm:h-[600px] bg-accent-violet/5 blur-[120px] rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
 
       <div className="container mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center justify-between">
         <div className="w-full md:w-3/5 text-left">
@@ -88,7 +88,7 @@ const Hero: React.FC = () => {
           >
 
             <p className="mono text-accent-blue font-bold mb-4 tracking-[0.2em] text-sm uppercase">Hi, I'm</p>
-            <h1 className="text-6xl md:text-8xl font-sora font-black mb-6 leading-none flex flex-col">
+            <h1 className="text-4xl sm:text-5xl md:text-8xl font-sora font-black mb-6 leading-none flex flex-col">
               <span className="shimmer-text">Pratham</span>
               <span className="shimmer-text">Pednekar</span>
             </h1>
@@ -105,16 +105,16 @@ const Hero: React.FC = () => {
               </p>
             </div>
 
-            <p className="text-lg md:text-xl text-muted/80 max-w-xl mb-12 font-dm leading-relaxed">
+            <p className="text-base md:text-xl text-muted/80 max-w-xl mb-8 md:mb-12 font-dm leading-relaxed">
               <span className="text-accent-blue">🚀</span> Integrated MBA + B.Tech @ NMIMS University | Building intelligent systems that solve real problems
             </p>
 
-            <div className="flex flex-wrap gap-6 mb-16">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-4 mb-10 md:mb-16">
               <motion.a
                 href="#projects"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 bg-accent-blue text-white rounded-full font-bold shadow-[0_10px_30px_rgba(79,142,247,0.3)] hover:shadow-[0_15px_40px_rgba(79,142,247,0.5)] transition-all"
+                className="px-8 py-4 bg-accent-blue text-white rounded-full font-bold shadow-[0_10px_30px_rgba(79,142,247,0.3)] hover:shadow-[0_15px_40px_rgba(79,142,247,0.5)] transition-all text-center"
               >
                 View My Work
               </motion.a>
@@ -123,7 +123,7 @@ const Hero: React.FC = () => {
                 download="Pratham_Pednekar_Resume.pdf"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 border border-white/20 hover:border-accent-blue/50 rounded-full font-bold backdrop-blur-sm transition-all"
+                className="px-8 py-4 border border-white/20 hover:border-accent-blue/50 rounded-full font-bold backdrop-blur-sm transition-all text-center"
               >
                 Download Resume
               </motion.a>

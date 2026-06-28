@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 const About: React.FC = () => {
   return (
-    <section id="about" className="relative py-32 overflow-hidden section-clip bg-navy/30">
+    <section id="about" className="relative py-16 md:py-32 overflow-hidden section-clip bg-navy/30">
       {/* Ghost Number */}
       <div className="absolute top-20 left-10 text-[15vw] font-sora font-black opacity-[0.03] select-none pointer-events-none">
         01
@@ -14,7 +14,7 @@ const About: React.FC = () => {
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="text-4xl md:text-5xl font-sora font-bold mb-16 flex items-center gap-4"
+          className="text-3xl md:text-5xl font-sora font-bold mb-10 md:mb-16 flex items-center gap-4"
         >
           <span className="text-accent-blue font-mono text-2xl">01.</span>
           About Me
@@ -78,13 +78,13 @@ const About: React.FC = () => {
             transition={{ duration: 0.8 }}
             className="flex flex-col space-y-6"
           >
-            <p className="text-muted text-lg leading-relaxed">
+            <p className="text-muted text-base md:text-lg leading-relaxed">
               I'm Pratham, a Computer Engineering student at NMIMS pursuing an Integrated MBA + B.Tech (2024–2028). 
               I previously completed a Diploma in Computer Engineering from Mumbai University (2020–2023). 
               I'm deeply passionate about AI, Machine Learning, Computer Vision, and NLP — building systems that 
               are intelligent, useful, and impactful.
             </p>
-            <p className="text-muted text-lg leading-relaxed">
+            <p className="text-muted text-base md:text-lg leading-relaxed">
               I also completed a UI/UX Design internship at NSMEDIA Solutions and have been selected in 
               Smart India Hackathon 2025 at the college level. My goal is to leverage data and algorithms 
               to solve complex real-world problems.
